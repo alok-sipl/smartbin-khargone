@@ -1,0 +1,12 @@
+<%if(status === "Error") { %>
+<div class="alert alert-danger" role="alert"><%=statusDescription%></div>
+<% } %>
+<form role="form"action="/country/create" method="post">
+<!-- This line below is to support PUT HTTP method. Works only in Express JS Server. It's cool-->
+<div class="form-group">
+<label for="txtFirstName">Name</label>
+<input type="text" class="form-control" name="name" id="txtFirstName" placeholder="name" value="<%=country.name%>">
+</div>
+<p></p>
+<button type="submit" class="btn btn-default">Submit</button>
+</form>

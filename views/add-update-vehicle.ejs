@@ -1,0 +1,144 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            <%= (Object.keys(vehicle).length) ? 'Edit' : 'Add' %> Vehicle
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a title="Vehicle List" href="<%= sails.config.base_url %>vehicle">Vehicle List</a></li>
+              <li class="active">
+                <%= (Object.keys(vehicle).length) ? 'Edit' : 'Add' %> Vehicle</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="hpanel">
+      <div class="panel-body">
+        <% if(!(Object.keys(vehicle).length)){ %>
+        <form action="<%= sails.config.base_url %>vehicle/add" method="post" enctype="multipart/form-data"
+              id="add-vehicle" class='form-horizontal form-submit' data-parsley-validate='true' autocomplete="off">
+          <% }else{ %>
+          <form action="<%= sails.config.base_url %>vehicle/edit/<%= req.params.id %>" method="post"
+                enctype="multipart/form-data"
+                id="add-vehicle" class='form-horizontal form-submit' data-parsley-validate='true' autocomplete="off">
+            <% } %>
+
+            <% if (req.session.flash) { %>
+            <%- req.flash('flashMessage') %>
+            <% } %>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="last_name">Name<span class="star-icon">*</span></label>
+                <input type="text" name="name" class="form-control" id="name" required
+                       value="<%= (vehicle.name) ? (vehicle.name) : (req.param('name')) ? req.param('name') : '' %>"
+                       maxlength="<%= sails.config.length.name %>"
+                       data-parsley-required-message="<%= Vehicle.message.name_required %>"
+                       data-parsley-maxlength-message="<%= Vehicle.message.name_maxlength %>"
+                       pattern="<%= sails.config.regex.name %>"
+                       data-parsley-pattern-message="<%= Vehicle.message.name_pattern %>"
+                       placeholder="Name"/>
+                <span class="help-block">
+      <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
+      </strong>
+      </span>
+              </div>
+
+              <div class="col-md-3">
+                <label for="contact_no">Vehicle Number<span class="star-icon">*</span></label>
+                <input type="text" name="number" class="form-control" id="number"
+                       value="<%= (vehicle.number) ? (vehicle.number) : (req.param('number')) ? req.param('number') : '' %>"
+                       required
+                       data-parsley-required-message="<%= Vehicle.message.number_required %>"
+                       placeholder="Vehicle Number"/>
+                <span class="help-block">
+                  <strong><%= (errors.number != undefined) ? errors.number.message : '' %></strong>
+                </span>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Type<span class="star-icon">*</span></label>
+                <div class="type">
+                  <select name="type" id="type" class="form-control" required
+                          data-parsley-required-message="<%= Vehicle.message.type_required %>">
+                    <option value="">Select Type</option>
+                    <%
+                    if(Object.keys(types).length){
+                      for(var key in types) { %>
+                    <option <%= (vehicle.type && vehicle.type == types[key]['key']) ? "selected" : (req.param('type') && req.param('type') == types[key]['key']) ? "selected" : '' %>
+                      value="<%= types[key]['key'] %>"><%= types[key].name %></option>
+                    <% }
+                    } %>
+                  </select>
+
+                </div>
+                <span class="help-block">
+                    <strong><%= (errors.type != undefined) ? errors.type.message : '' %></strong>
+                </span>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Driver<span class="star-icon">*</span></label>
+                <div class="assign_to">
+                  <select name="assign_to" id="assign_to" class="form-control" required
+                          data-parsley-required-message="<%= Vehicle.message.assign_to_required %>">
+                    <option value="">Select Driver</option>
+                    <%
+                    if(drivers && drivers != null && Object.keys(drivers).length){
+                      for(var key in drivers) { %>
+                    <option <%= (vehicle.assign_to && vehicle.assign_to == drivers[key]['key']) ? "selected" : (req.param('assign_to') && req.param('assign_to') == drivers[key]['key']) ? "selected" : '' %>
+                      value="<%= drivers[key]['key'] %>"><%= drivers[key].name %></option>
+                    <% }
+                    } %>
+                  </select>
+                </div>
+                <span class="help-block">
+                  <strong><%= (errors.assign_to != undefined) ? errors.assign_to.message : '' %></strong>
+              </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <div class="status">
+                <label for="is_active">Status<span class="star-icon">*</span></label>
+                <select name="status" id="status" class="form-control" required
+                        data-parsley-required-message="<%= User.message.status_required %>">
+                  <option <%= (vehicle.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                  <option <%= (vehicle.is_deleted == false || vehicle.is_deleted == "false") ? "selected" : "" %>
+                    value="false">Active
+                  </option>
+                  <option <%= (vehicle.is_deleted == true || vehicle.is_deleted == "true") ? "selected" : "" %>
+                    value="true">In Active
+                  </option>
+                </select>
+                </div>
+                <span class="help-block">
+                                        <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
+                                        </strong>
+              </div>
+            </div>
+            <div class="col-md-12 text-right">
+              <button type="submit" title="<%= (Object.keys(vehicle).length) ? 'Update' : 'Add' %> Vehicle"
+                      class="btn btn-primary">
+                <%= (Object.keys(vehicle).length) ? 'Update' : 'Add' %> Vehicle
+              </button>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>vehicle">Cancel</a>
+            </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

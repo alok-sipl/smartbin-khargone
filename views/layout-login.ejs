@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= typeof title == 'undefined' ? sails.config.app_provider +' | '+   sails.config.app_name: sails.config.app_name + ' | ' + title %></title>
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <link rel="icon" type="image/x-icon" href="<%= sails.config.base_url %>images/favicon.ico" />
+  <!--STYLES-->
+  
+  <!--STYLES END-->
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/fontawesome/css/font-awesome.css">
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/metisMenu/dist/metisMenu.css">
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/style.css">
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
+</head>
+<body class="blank">
+<!-- Simple splash screen-->
+<div class="splash">
+  <div class="color-line"></div>
+  <div class="splash-title"><h1><%= sails.config.app_name %></h1>
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </div>
+</div>
+<!--[if lt IE 7]>
+<p class="alert alert-danger">You are using an <strong>outdated</strong> browser. Please <a
+  href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+<%- body %>
+<!-- Vendor scripts -->
+<script src="<%= sails.config.base_url %>custom/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/vendor/metisMenu/dist/metisMenu.min.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/vendor/parsley.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/homer.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/login.js"></script>
+</body>
+</html>

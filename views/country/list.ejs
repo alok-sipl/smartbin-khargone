@@ -1,0 +1,25 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+<th>Name</th>
+           </tr>
+    </thead>
+    <tbody>
+        <%
+        for(var _index=0; _index < countries.length; _index++) {
+            var _contact = countries[_index];
+        %>
+        
+        <tr>
+            <td><a href="/contact/<%=_contact.pid%>"><%=_contact.pid%></a></td>
+            <td><%=_contact.name%></td>
+            <td>
+                <form action='contact' method='post'>
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="btn btn-danger">X</button>
+                </form>
+            </td>
+        </tr>
+        <%}%>
+    </tbody>
+</table>

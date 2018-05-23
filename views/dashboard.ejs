@@ -1,0 +1,180 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            Dashboard
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li class="active">
+                <span>Dashboard</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="hpanel">
+  <div class="panel-body">
+    <div class="form-inline custom-inline-form">
+      <div class="form-group">
+        <label for="select_area">Select Ward</label>
+        <select onchange="resetbins(this.value)" name="select_area" id="select_ward" class="form-control">
+          <option value="">Select Ward</option>
+          <%
+          if(wards.length){
+            for(var key in wards) { %>
+          <option value="<%= wards[key].id %>"><%= wards[key].name %>
+          </option>
+          <% }
+          } %>
+
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="id">Select Driver</label>
+        <select onchange="resetbins(this.value)" name="select_driver" id="select_driver" class="form-control">
+          <option value="all">All Driver</option>
+          <%
+          if(drivers.length){
+            for(var key in drivers) { %>
+          <option value="<%= drivers[key].id %>"><%= drivers[key].name %>
+          </option>
+          <% }
+          } %>
+
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="id">Show Filled Bins</label>
+        <input onclick="resetbins(this.value)" class="form-control" type="checkbox" name="bin_type" id="bin_type" value="1">
+      </div>
+    </div>
+    <div id="map-canvas"></div>
+  </div>
+</div>
+
+<div class="hpanel">
+  <div class="panel-body">
+    <table id="bin-grid-searchpage"></table>
+    <div id="bin-grid-pager-searchpage"></div>
+  </div>
+</div>
+
+<script>
+
+  /* Search bin js */
+  var addresses = '';
+  var message = '';
+  var delay = 100;
+  var nextAddress = 0;
+  var infowindow = new google.maps.InfoWindow();
+  var geo = new google.maps.Geocoder();
+  var bounds = new google.maps.LatLngBounds();
+  var markers = [];
+  var latlng = new google.maps.LatLng(21.823524, 75.514989);
+  var mapOptions = {
+    zoom: 12,
+    center: latlng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+  function filterbins() {
+    var select_ward = $('#select_ward').val();
+    var select_driver = $('#select_driver').val();
+    var bin_type = ($("#bin_type").is(':checked')) ? true : false;
+    var thisvalue = $("select#select_ward option:selected").text();
+
+    $('#gs_ward_name').val(thisvalue);
+    $('#gs_ward_name').keyup();
+    $.ajax({
+      url: '/bin/filterbins',
+      type: "post",
+      dataType: "json",
+      beforeSend: function () {
+      },
+      data: {selected_ward: select_ward, select_driver: select_driver, bin_type: bin_type},
+      cache: true,
+      error: function () {
+      },
+      success: function (e) {
+        $.each(e.bins, function (i, option) {
+          if (option.latitude != null && option.latitude != "") {
+            if (option.alert_level != undefined && option.alert_level != '' && option.latest_dust_level != undefined && option.latest_dust_level != undefined) {
+              option.latest_dust_level = parseInt((((parseInt(option.alert_level) - parseInt(option.latest_dust_level))) * 100) / parseInt(option.alert_level));
+            } else {
+              option.latest_dust_level = 0;
+            }
+            var search = option.location + ' (Dust Status: ' + option.latest_dust_level + ')';
+            createmarkers(search, option.latitude, option.longitude, option.latest_dust_level, option.alert_level);
+          } else {
+          }
+        });
+      },
+      complete: function (jqXHR, textStatus) {
+
+      }
+    });
+  }
+
+  // Removes the markers from the map, but keeps them in the array.
+  function resetbins() {
+    setMapOnAll(null);
+    filterbins();
+  }
+
+  function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+  }
+
+  function createmarkers(add, lat, lng, latest_dust_level, alert_level) {
+    if (latest_dust_level <= <%= sails.config.length.min_fill_level %>) {
+      var pinColor = "008000";
+    } else  if (latest_dust_level > <%= sails.config.length.min_fill_level %> && latest_dust_level <= <%= sails.config.length.avrage_fill_level %>){
+      var pinColor = "FFA500";
+    }else{
+      var pinColor = "FF0000";
+    }
+    var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+      new google.maps.Size(21, 34),
+      new google.maps.Point(0, 0),
+      new google.maps.Point(10, 34));
+
+    var contentString = add;
+
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(lat, lng),
+      map: map,
+      icon: pinImage,
+    });
+    map.setCenter(new google.maps.LatLng(lat, lng));
+    markers.push(marker);
+
+    google.maps.event.addListener(marker, 'click', function () {
+      infowindow.setContent(contentString);
+      infowindow.open(map, marker);
+    });
+
+    google.maps.event.addListener(marker, 'mouseover', function () {
+      infowindow.setContent(contentString);
+      infowindow.open(map, marker);
+    });
+
+    bounds.extend(marker.position);
+  }
+
+  filterbins();
+
+</script>

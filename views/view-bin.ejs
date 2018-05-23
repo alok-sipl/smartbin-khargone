@@ -1,0 +1,206 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            View Bin :<%= (bin.name != undefined) ? (bin.name) : '' %>
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a title="Bin List" href="<%= sails.config.base_url %>bin">Bin List</a></li>
+              <li class="active">
+                <span>View Bin</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="hpanel">
+      <div class="panel-body">
+            <% if (req.session.flash) { %>
+            <%- req.flash('flashMessage') %>
+            <% } %>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="id">Bin ID</label>
+                <input type="text" name="id" class="form-control" id="id"
+                       value="<%= (bin.id) ? (bin.id) : '' %>"
+                       required
+                  <%= (Object.keys(bin).length) ? "disabled" : '' %>
+                       data-parsley-required-message="<%= Bin.message.bin_id_required %>"
+                       placeholder="Bin ID"/>
+              </div>
+              <div class="col-md-3">
+                <label for="last_name">Name</label>
+                <input type="text" name="name" class="form-control" id="name" required disabled
+                       value="<%= (bin.name) ? (bin.name) : '' %>"
+                       data-parsley-required-message="<%= Bin.message.name_required %>"
+                       placeholder="Name"/>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Country</label>
+                <select name="country" onchange="getState(this.value)" id="country" class="form-control" required
+                        disabled
+                        data-parsley-required-message="<%= Bin.message.country_required %>">
+                  <option value="">Select Country</option>
+                  <%
+                  if(Object.keys(countries).length){
+                    for(var key in countries) { %>
+                  <option <%= (bin.country_id && bin.country_id == key) ? "selected" : '' %>
+                    value="<%= countries[key].key %>"><%= countries[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">State</label>
+                <select name="state" onchange="getCity(this.value)" id="state" class="form-control" required disabled
+                        data-parsley-required-message="<%= Bin.message.state_required %>">
+                  <option value="">Select State</option>
+                  <%
+                  if(Object.keys(states).length){
+                    for(var key in states) { %>
+                  <option <%= (bin.state_id && bin.state_id == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= states[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="is_active">City</label>
+                <select name="city" onchange="getCircle(this.value)" id="city" class="form-control" required disabled
+                        data-parsley-required-message="<%= Bin.message.city_required %>">
+                  <option value="">Select City</option>
+                  <%
+                  if(Object.keys(cities).length){
+                    for(var key in cities) { %>
+                  <option <%= (bin.city_id && bin.city_id == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= cities[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Circle</label>
+                <select name="circle" onchange="getWardByCircle(this.value)" id="circle" class="form-control" required
+                        disabled
+                        data-parsley-required-message="<%= Bin.message.circle_required %>">
+                  <option value="">Select Circle</option>
+                  <%
+                  if(Object.keys(circles).length){
+                    for(var key in circles) { %>
+                  <option <%= (bin.circle_id && bin.circle_id == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= circles[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Ward</label>
+                <select name="ward" id="ward" onchange="getAreaByWard(this.value)" class="form-control" required
+                        disabled
+                        data-parsley-required-message="<%= Bin.message.ward_required %>">
+                  <option value="">Select Ward</option>
+                  <%
+                  if(Object.keys(wards).length){
+                    for(var key in wards) { %>
+                  <option <%= (bin.ward_id && bin.ward_id == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= wards[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Area</label>
+                <select name="area" id="area" class="form-control" required disabled
+                        data-parsley-required-message="<%= Bin.message.area_required %>">
+                  <option value="">Select Area</option>
+                  <%
+                  if(Object.keys(areas).length){
+                    for(var key in areas) { %>
+                  <option <%= (bin.area_id && bin.area_id == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= areas[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="is_active">Location</label>
+                <input type="text" name="location" class="form-control" required disabled
+                       id="location"
+                       value="<%= (bin.location) ? (bin.location) : '' %>"
+                       data-parsley-required-message="<%= Bin.message.location_required %>"
+                       placeholder="Location"/>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Latitude</label>
+                <input type="text" name="latitude" class="form-control" required disabled id="latitude"
+                       value="<%= (bin.latitude) ? (bin.latitude) : '' %>"
+                       data-parsley-required-message="<%= Bin.message.latitude_required %>"
+                       placeholder="Latitude"/>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Longitude</label>
+                <input type="text" name="longitude" class="form-control" required disabled id="longitude"
+                       value="<%= (bin.longitude) ? (bin.longitude) : '' %>"
+                       data-parsley-required-message="<%= Bin.message.longitude_required %>"
+                       placeholder="Longitude"/>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Alert Level</label>
+                <input type="text" name="alert_level" class="form-control" required disabled id="alert_level"
+                       value="<%= (bin.alert_level) ? (bin.alert_level) : '' %>"
+                       data-parsley-required-message="<%= Bin.message.alert_level_required %>"
+                       placeholder="Alert Level"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="is_active">Bin Image</label>
+                <% if(Object.keys(bin).length){ %>
+                <img width="100"
+                     src="<%= (bin.image) ? bin.image : sails.config.base_url + 'images/default_bin.jpg' %>"
+                     title="<%= (bin.name) ? bin.name : '' %>"
+                     alt="<%= (bin.name) ? bin.name : '' %>">
+                <% } %>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Status<span class="star-icon">*</span></label>
+                <select name="status" id="status" class="form-control" required disabled
+                        data-parsley-required-message="<%= User.message.status_required %>">
+                  <option <%= (bin.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                  <option <%= (bin.is_deleted == false || bin.is_deleted == "false") ? "selected" : "" %>
+                    value="false">Active
+                  </option>
+                  <option <%= (bin.is_deleted == true || bin.is_deleted == "true") ? "selected" : "" %>
+                    value="true">In Active
+                  </option>
+                </select>
+                <span class="help-block">
+                                        <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
+                                        </strong>
+              </div>
+            </div>
+            <div class="col-md-12 text-right">
+              <a title="Back" class="btn btn-primary" href="<%= (req.query.search != undefined) ? sails.config.base_url + 'dashboard' : sails.config.base_url + 'bin' %>">Back</a>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            View Vehicle: <%= (vehicle.name) ? (vehicle.name) : '' %>
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a title="Vehicle List" href="<%= sails.config.base_url %>vehicle">Vehicle List</a></li>
+              <li class="active">
+                <span>View Vehicle</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="hpanel">
+      <div class="panel-body">
+        <div class="row">
+          <div class="form-group ">
+            <div class="col-md-3">
+              <label for="last_name">Name</label>
+              <input type="text" name="name" class="form-control" id="name" required disabled
+                     value="<%= (vehicle.name) ? (vehicle.name) : '' %>"
+                     maxlength="<%= sails.config.length.name %>"
+                     data-parsley-required-message="<%= Vehicle.message.name_required %>"
+                     data-parsley-maxlength-message="<%= Vehicle.message.name_maxlength %>"
+                     pattern="<%= sails.config.regex.name %>"
+                     data-parsley-pattern-message="<%= Vehicle.message.name_pattern %>"
+                     placeholder="Name"/>
+            </div>
+            <div class="col-md-3">
+              <label for="contact_no">Vehicle Number</label>
+              <input type="text" name="number" class="form-control" id="number" disabled
+                     value="<%= (vehicle.number) ? (vehicle.number) : '' %>"
+                     required
+                     data-parsley-required-message="<%= Vehicle.message.number_required %>"
+                     placeholder="Vehicle Number"/>
+            </div>
+            <div class="col-md-3">
+              <label for="is_active">Type</label>
+              <div class="type">
+                <select name="type" id="type" class="form-control" required disabled
+                        data-parsley-required-message="<%= Vehicle.message.type_required %>">
+                  <option value="">Select Type</option>
+                  <%
+                  if(Object.keys(types).length){
+                    for(var key in types) { %>
+                  <option <%= (vehicle.type && vehicle.type == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= types[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label for="is_active">Driver</label>
+              <div class="assign_to">
+                <select name="assign_to" id="assign_to" class="form-control" required disabled
+                        data-parsley-required-message="<%= Vehicle.message.assign_to_required %>">
+                  <option value="">Select Driver</option>
+                  <%
+                  if(drivers && drivers != null && Object.keys(drivers).length){
+                    for(var key in drivers) { %>
+                  <option <%= (vehicle.assign_to && vehicle.assign_to == key) ? "selected" : '' %>
+                    value="<%= key %>"><%= drivers[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-3">
+              <label for="is_active">Status<span class="star-icon">*</span></label>
+              <select name="status" id="status" class="form-control" required disabled
+                      data-parsley-required-message="<%= User.message.status_required %>">
+                <option <%= (vehicle.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                <option <%= (vehicle.is_deleted == false || vehicle.is_deleted == "false") ? "selected" : "" %>
+                  value="false">Active
+                </option>
+                <option <%= (vehicle.is_deleted == true || vehicle.is_deleted == "true") ? "selected" : "" %>
+                  value="true">In Active
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-12 text-right">
+            <a title="Back" class="btn btn-primary" href="<%= sails.config.base_url %>vehicle">Back</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

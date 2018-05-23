@@ -1,0 +1,313 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            <%= (bin != null &&  Object.keys(bin).length) ? 'Edit' : 'Add' %> Bin
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a title="Bin List" href="<%= sails.config.base_url %>bin">Bin List</a></li>
+              <li class="active">
+                <%= (bin != null &&  Object.keys(bin).length) ? 'Edit' : 'Add' %> Bin</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="hpanel">
+      <div class="panel-body">
+        <% if(!(Object.keys(bin).length)){ %>
+        <form action="<%= sails.config.base_url %>bin/add" method="post" enctype="multipart/form-data"
+              id="add-bin" class='form-horizontal form-submit' autocomplete="off" data-parsley-validate='true'>
+          <% }else{ %>
+          <form action="<%= sails.config.base_url %>bin/edit/<%= req.params.id %>" method="post"
+                enctype="multipart/form-data"
+                id="add-bin" class='form-horizontal form-submit' autocomplete="off" data-parsley-validate='true'>
+            <% } %>
+            <% if (req.session.flash) { %>
+            <%- req.flash('flashMessage') %>
+            <% } %>
+            <div class="form-group ">
+              <div class="col-md-3">
+                <label for="id">Bin ID<span class="star-icon">*</span></label>
+                <input type="text" name="id" class="form-control" id="id"
+                       value="<%= (bin.id) ? (bin.id) : (req.param('id')) ? req.param('id') : '' %>"
+                  <%= (Object.keys(bin).length) ? "disabled" : '' %>
+                       required
+                       maxlength="<%= sails.config.length.bin_id %>"
+                       data-parsley-length="[<%= sails.config.length.bin_id %>, <%= sails.config.length.bin_id %>]"
+                       pattern="<%= sails.config.regex.bin_id %>"
+                       data-parsley-required-message="<%= Bin.message.bin_id_required %>"
+                       data-parsley-maxlength-message="<%= Bin.message.bin_id_maxlength %>"
+                       data-parsley-length-message="<%= Bin.message.bin_id_maxlength %>"
+                       data-parsley-pattern-message="<%= Bin.message.bin_id_pattern %>"
+                       placeholder="Bin ID"/>
+                <span class="help-block">
+                  <strong><%= (errors.id != undefined) ? errors.id.message : '' %></strong>
+                </span>
+              </div>
+              <div class="col-md-3">
+                <label for="last_name">Name<span class="star-icon">*</span></label>
+                <input type="text" name="name" class="form-control" id="name"
+                       value="<%= (bin.name) ? (bin.name) : (req.param('name')) ? req.param('name') : '' %>"
+                       required
+                       maxlength="<%= sails.config.length.name %>"
+                       pattern="<%= sails.config.regex.name %>"
+                       data-parsley-required-message="<%= Bin.message.name_required %>"
+                       data-parsley-maxlength-message="<%= Bin.message.name_maxlength %>"
+                       data-parsley-pattern-message="<%= Bin.message.name_pattern %>"
+                       placeholder="Name"/>
+                <span class="help-block">
+                  <strong><%= (errors.name != undefined) ? errors.name.message : '' %></strong>
+                </span>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Country<span class="star-icon">*</span></label>
+                <select name="country" onchange="getState(this.value)" id="country" class="form-control" required
+                        data-parsley-required-message="<%= Bin.message.country_required %>">
+                  <option value="">Select Country</option>
+                  <%
+                  if(Object.keys(countries).length){
+                    for(var key in countries) { %>
+                  <option <%= (bin.country_id && bin.country_id == countries[key]['key']) ? "selected" : (req.param('country') && req.param('country') == countries[key]['key']) ? "selected" : '' %>
+                    value="<%= countries[key]['key'] %>"><%= countries[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="country_name" id="country_name"
+                       value="<%= (bin.country_name) ? (bin.country_name) : '' %>"/>
+                <span class="help-block">
+<strong><%= (errors.country != undefined) ? errors.country.message : '' %>
+</strong>
+</span>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">State<span class="star-icon">*</span></label>
+                <select name="state" onchange="getCity(this.value)" id="state" class="form-control"
+                        required
+                        data-parsley-required-message="<%= Bin.message.state_required %>">
+                  <option value="">Select State</option>
+                  <%
+                  if(Object.keys(states).length){
+                    for(var key in states) { %>
+                  <option <%= (bin.state_id && bin.state_id == states[key]['key']) ? "selected" : (req.param('state') && req.param('state') == states[key]['key']) ? "selected" : '' %>
+                    value="<%= states[key]['key'] %>"><%= states[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="state_name" id="state_name"
+                       value="<%= (bin.state_name) ? (bin.state_name) : '' %>"/>
+                <span class="help-block">
+<strong><%= (errors.state != undefined) ? errors.stateId.message : '' %>
+</strong>
+</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="is_active">City<span class="star-icon">*</span></label>
+                <select name="city" onchange="getCircle(this.value)" id="city" class="form-control"
+                        required
+                        data-parsley-required-message="<%= Bin.message.city_required %>">
+                  <option value="">Select City</option>
+                  <%
+                  if(cities != null &&  Object.keys(cities).length){
+                    for(var key in cities) { %>
+                  <option <%= (bin.city_id && bin.city_id == cities[key]['key']) ? "selected" : (req.param('city') && req.param('city') == cities[key]['key']) ? "selected" : '' %>
+                    value="<%= cities[key]['key'] %>"><%= cities[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="city_name" id="city_name"
+                       value="<%= (bin.city_name) ? (bin.city_name) : '' %>"/>
+                <span class="help-block">
+<strong><%= (errors.city != undefined) ? errors.cityId.message : '' %>
+</strong>
+</span>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Circle<span class="star-icon">*</span></label>
+                <select name="circle" onchange="getWardByCircle(this.value)" id="circle" class="form-control"
+                        required
+                        data-parsley-required-message="<%= Bin.message.circle_required %>">
+                  <option value="">Select Circle</option>
+                  <%
+                  if(circles != null && Object.keys(circles).length){
+                    for(var key in circles) { %>
+                  <option <%= (bin.circle_id && bin.circle_id == circles[key]['key']) ? "selected" : (req.param('circle') && req.param('circle') == circles[key]['key']) ? "selected" : '' %>
+                    value="<%= circles[key]['key'] %>"><%= circles[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="circle_name" id="circle_name"
+                       value="<%= (bin.circle_name) ? (bin.circle_name) : '' %>"/>
+                <span class="help-block">
+<strong><%= (errors.circle != undefined) ? errors.circleId.message : '' %>
+</strong>
+</span>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Ward<span class="star-icon">*</span></label>
+                <select name="ward" id="ward" onchange="getAreaByWard(this.value)" class="form-control"
+                        required
+                        data-parsley-required-message="<%= Bin.message.ward_required %>">
+                  <option value="">Select Ward</option>
+                  <%
+                  if(wards != null && Object.keys(wards).length){
+                    for(var key in wards) { %>
+                  <option <%= (bin.ward_id && bin.ward_id == wards[key]['key']) ? "selected" : (req.param('ward') && req.param('ward') == wards[key]['key']) ? "selected" : '' %>
+                    value="<%= wards[key]['key'] %>"><%= wards[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="ward_name" id="ward_name"
+                       value="<%= (bin.ward_name) ? (bin.ward_name) : '' %>"/>
+                <span class="help-block">
+<strong><%= (errors.ward != undefined) ? errors.ward.message : '' %>
+</strong>
+</span>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Area<span class="star-icon">*</span></label>
+                <select name="area" id="area" class="form-control" required
+                        data-parsley-required-message="<%= Bin.message.area_required %>">
+                  <option value="">Select Area</option>
+                  <%
+                  if(areas != null && Object.keys(areas).length){
+                    for(var key in areas) { %>
+                  <option <%= (bin.area_id && bin.area_id == areas[key]['key']) ? "selected" : (req.param('area') && req.param('area') == key) ? "selected" : '' %>
+                    value="<%= areas[key]['key'] %>"><%= areas[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="area_name" id="area_name"
+                       value="<%= (bin.area_name) ? (bin.area_name) : '' %>"/>
+                <span class="help-block">
+<strong><%= (errors.area != undefined) ? errors.areaId.message : '' %>
+</strong>
+</span>
+                <input type="hidden" name="area_name" id="area_name" value="<%= (bin.area_name) ? (bin.area_name) : (req.param('area_name')) ? req.param('area_name') : '' %>">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="is_active">Location<span class="star-icon">*</span></label>
+                <input type="text" name="location" class="form-control"
+                       required id="location"
+                       value="<%= (bin.location) ? (bin.location) : (req.param('location')) ? req.param('location') : '' %>"
+                       maxlength="<%= sails.config.length.address %>"
+                       data-parsley-required-message="<%= Bin.message.location_required %>"
+                       placeholder="Location"/>
+                <span class="help-block">
+<strong><%= (errors.location != undefined) ? errors.location.message : '' %>
+</strong>
+</span>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Latitude<span class="star-icon">*</span></label>
+                <input type="text" name="latitude" class="form-control"
+                       value="<%= (bin.latitude) ? (bin.latitude) : (req.param('latitude')) ? req.param('latitude') : '' %>"
+                       id="latitude"
+                       required
+                       maxlength="<%= sails.config.length.bin_id %>"
+                       pattern="<%= sails.config.regex.lat_long %>"
+                       data-parsley-required-message="<%= Bin.message.latitude_required %>"
+                       data-parsley-pattern-message="<%= Bin.message.latitude_pattern %>"
+                       placeholder="Latitude"/>
+                <span class="help-block">
+<strong><%= (errors.latitude != undefined) ? errors.latitude.message : '' %>
+</strong>
+</span>
+              </div>
+
+              <div class="col-md-3">
+                <label for="is_active">Longitude<span class="star-icon">*</span></label>
+                <input type="text" name="longitude" class="form-control" id="longitude"
+                       value="<%= (bin.longitude) ? (bin.longitude) : (req.param('longitude')) ? req.param('longitude') : '' %>"
+                       required
+                       maxlength="<%= sails.config.length.bin_id %>"
+                       pattern="<%= sails.config.regex.lat_long %>"
+                       data-parsley-required-message="<%= Bin.message.longitude_required %>"
+                       data-parsley-pattern-message="<%= Bin.message.longitude_pattern %>"
+                       placeholder="Longitude"/>
+                <span class="help-block">
+<strong><%= (errors.longitude != undefined) ? errors.longitude.message : '' %>
+</strong>
+</span>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Alert Level<span class="star-icon">*</span></label>
+                <input type="number" name="alert_level" class="form-control" required id="alert_level"
+                       value="<%= (bin.alert_level) ? (bin.alert_level) : (req.param('alert_level')) ? req.param('alert_level') : '' %>"
+                       maxlength="3"
+
+                       data-parsley-required-message="<%= Bin.message.alert_level_required %>"
+                       placeholder="Alert Level"/>
+                <span class="help-block">
+<strong><%= (errors.alert_level != undefined) ? errors.alert_level.message : '' %>
+</strong>
+</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-3">
+                <label for="is_active">Bin Image<span class="star-icon">*</span></label>
+                <% if(bin != null &&  Object.keys(bin).length){ %>
+                <img width="100"
+                     src="<%= (bin.image) ? bin.image : sails.config.base_url + 'images/default_bin.jpg' %>"
+                     title="<%= (bin.name) ? bin.name : '' %>"
+                     alt="<%= (bin.name) ? bin.name : '' %>">
+                <% } %>
+                <input type="file" class="form-control" name="image" id="image" accept="image/*"/>
+
+                <span class="help-block">
+<strong><%= (errors.image != undefined) ? errors.image.message : '' %>
+</strong>
+</span>
+              </div>
+              <div class="col-md-3">
+                <label for="is_active">Status<span class="star-icon">*</span></label>
+                <select name="status" id="status" class="form-control" required
+                        data-parsley-required-message="<%= User.message.status_required %>">
+                  <option <%= (bin.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                  <option <%= (bin.is_deleted == false || bin.is_deleted == "false") ? "selected" : "" %>
+                    value="false">Active
+                  </option>
+                  <option <%= (bin.is_deleted == true || bin.is_deleted == "true") ? "selected" : "" %>
+                    value="true">In Active
+                  </option>
+                </select>
+                <span class="help-block">
+                                        <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
+                                        </strong>
+              </div>
+            </div>
+              <div class="col-md-12 text-right">
+                <button title="<%= (bin != null && Object.keys(bin).length) ? 'Update' : 'Add' %> Bin" type="submit" class="btn btn-primary">
+                  <%= (bin != null &&  Object.keys(bin).length) ? 'Update' : 'Add' %> Bin
+                </button>
+                <a title="Cancel" class="btn btn-primary" href="<%= (req.query.search != undefined) ? sails.config.base_url + 'dashboard' : sails.config.base_url + 'bin' %>">Cancel</a>
+              </div>
+            </div>
+
+          </form>
+      </div>
+    </div>
+  </div>
+</div>

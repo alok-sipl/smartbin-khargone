@@ -1,0 +1,40 @@
+<% if(Object.keys(drivers).length){
+  for (var key in drivers) { %>
+<div class="col-lg-4">
+  <div class="hpanel hgreen contact-panel">
+    <div class="panel-body">
+      <img alt="<%= (drivers[key]['company_name'] != undefined) ? drivers[key]['company_name'] : '' %>" class="img-circle m-b"
+           src="<%= (drivers[key]['compnay_image'] != undefined) ? drivers[key]['compnay_image'] : sails.config.base_url + 'images/profile.png' %>">
+      <h3><%= (drivers[key]['company_name'] != undefined) ? drivers[key]['company_name'] : '' %></h3>
+      <h4><%= (drivers[key]['name'] != undefined) ? drivers[key]['name'] : '' %></h4>
+      <div class="text-muted font-bold m-b-xs">
+        <%= (drivers[key]['city_name'] != undefined) ? ((drivers[key]['area'] != undefined) ? drivers[key]['area'] + ', ' : '') + drivers[key]['city_name'] + ', ' + drivers[key]['country_name'] : '' %>
+      </div>
+      <p><%= (drivers[key]['mobile_number'] != undefined) ? drivers[key]['mobile_number'] : '' %></p>
+      <p><%= (drivers[key]['email'] != undefined) ? drivers[key]['email'] : '' %></p>
+    </div>
+    <div class="panel-footer contact-footer">
+      <div class="row">
+        <div class="col-md-6 border-right">
+          <div class="contact-stat">
+            <span>Status </span>
+            <strong><% if(drivers[key]['is_deleted']){ %>
+              <a data-tooltip="" title="" data-status="true" data-url="<%= sails.config.base_url %>driver/updateStatus/<%= key %>" class="button status-action active" data-id="<%= key %>" href="javascript:void(0);" data-original-title="Make Active"><i class="fa fa-check-square-o"></i></a>
+              <% }else{ %>
+              <a data-tooltip="" title="" data-status="false" data-url="<%= sails.config.base_url %>driver/updateStatus/<%= key %>" class="button status-action active" data-id="<%= key %>" href="javascript:void(0);" data-original-title="Make In Active"><i class="fa fa-square-o"></i></a>
+              <% } %>
+            </strong>
+          </div>
+        </div>
+        <div class="col-md-6 border-right">
+          <div class="contact-stat"><a href="<%= sails.config.base_url %>driver/edit/<%= key %>"
+                                       title="<%= (drivers[key]['name'] != undefined) ? drivers[key]['name'] : '' %>">Edit
+              Driver</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% }
+} %>

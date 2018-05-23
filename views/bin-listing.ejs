@@ -1,0 +1,37 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            Bin List
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li class="active">
+                <span>Bin List</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="col-md-6 text-right m-t-sm">
+          <a title="Add Bin" class="btn btn-primary" href="<%= sails.config.base_url %>bin/add"><i
+              class="icon icon-user"></i>Add Bin</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="hpanel">
+  <div class="panel-body">
+    <table id="bin-grid"></table>
+    <div id="bin-grid-pager"></div>
+
+  </div>
+</div>

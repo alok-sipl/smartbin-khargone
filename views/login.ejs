@@ -1,0 +1,52 @@
+<h1 class="sb-logo"><i class="fa fa-trash-o" aria-hidden="true"></i> Smartbin</h1>
+<div class="login-container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="text-center m-b-md">
+        <div class="site-logo">
+          <img src="<%= sails.config.base_url %>images/logo.png" title="<%= sails.config.app_name %>"
+               alt="<%= sails.config.app_name %>">
+        </div>
+      </div>
+      <div class="hpanel">
+        <% if (req.session.flash) { %>
+        <%- req.flash('flashMessage') %>
+        <% } %>
+        <div class="panel-body">
+          <h3>Administrator Login</h3>
+          <form method="post" action="<%= sails.config.base_url %>login" data-parsley-validate novalidate="" class='form-horizontal form-submit'
+                name="loginForm" id="loginForm" autocomplete="off">
+            <div class="form-group <%= (errors.email != undefined) ? " has-error" : "" %>">
+              <label class="control-label" for="email">Email<span>*</span></label>
+              <input type="email" name="email" class="form-control" id="email"
+                     required
+                     maxlength="<%= sails.config.length.email %>"
+                     data-parsley-type="email"
+                     data-parsley-required-message="<%= User.message.email_required %>"
+                     data-parsley-maxlength-message="<%= User.message.email_maxlength %>"
+                     data-parsley-type="email" value=""
+                     placeholder="Email"/>
+              <span class="help-block">
+                <strong><%= (errors.email != undefined) ? errors.email.message : '' %>
+                </strong>
+              </span>
+            </div>
+            <div class="form-group <%= (errors.password != undefined) ? " has-error" : "" %>">
+              <label class="control-label" for="password">Password<span>*</span></label>
+              <input type="password" name="password" class="form-control" id="password"
+                     required maxlength="<%= sails.config.length.max_password %>"
+                     data-parsley-required-message="<%= User.message.password_required %>"
+                     placeholder="Password"/>
+              <span class="help-block">
+                <strong><%= (errors.password != undefined) ? errors.password.message : '' %>
+                </strong>
+              </span>
+            </div>
+            <button class="btn btn btn-primary btn-block admin-login-btn" title="Login"><span>Login</span></button>
+          </form>
+          <div class="forgot text-center m-t-sm"><a href="<%= sails.config.base_url %>login/forgotPassword" title="Forgot Password">Forgot Password?</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

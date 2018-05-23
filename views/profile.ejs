@@ -1,0 +1,91 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            Update Profile
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li class="active">Update Proflie
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="hpanel">
+      <div class="panel-body">
+        <form action="<%= sails.config.base_url %>dashboard/profile" method="post" enctype="multipart/form-data"
+              id="profile" class='form-horizontal form-submit' data-parsley-validate='true' autocomplete="off">
+          <% if (req.session.flash) { %>
+          <%- req.flash('flashMessage') %>
+          <% } %>
+          <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
+            <div class="col-md-3">
+              <label for="name">Name<span class="star-icon">*</span></label>
+              <input type="text" name="name" class="form-control" id="name"
+                     value="<%= (user.name != undefined) ? user.name : "" %>"
+                     required
+                     maxlength="<%= sails.config.length.name %>"
+                     data-parsley-required-message="<%= User.message.name_required %>"
+                     data-parsley-maxlength-message="<%= User.message.name_maxlength %>"
+                     pattern="<%= sails.config.regex.name %>"
+                     data-parsley-pattern-message="<%= User.message.name_pattern %>"
+                     placeholder="Name"/>
+              <span class="help-block">
+                <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
+                </strong>
+              </span>
+            </div>
+            <div class="col-md-3">
+              <label for="email">Email<span class="star-icon">*</span></label>
+              <input type="email" name="email" class="form-control" id="email"
+                     value="<%= user.email %>"
+                     disabled
+                     placeholder="Email"/>
+            </div>
+            <div class="col-md-3">
+              <label for="mobile_number">Mobile Number</label>
+              <input type="text" name="mobile_number" class="form-control" id="mobile_number"
+                     value="<%= user.phone %>"
+                     disabled
+                     placeholder="Mobile Number"/>
+            </div>
+          </div>
+          <% /*  %>
+          <div class="form-group <%=  (errors.name != undefined) ? " has-error" : ""  %>">
+            <div class="col-md-3">
+              <label for="image">Profile Picture</label>
+              <input type="file" class="form-control" accept="image/*" name="image" id="image"
+                     data-parsley-max-file-size="<%= sails.config.length.max_file_upload_kb %>"
+                     data-parsley-filemimetypes="image/jpeg, image/png"s/>
+              <span class="help-block">
+                <strong><%=  (errors.image != undefined) ? errors.image.message : ''  %>
+                </strong>
+              </span>
+            </div>
+          </div>
+          <%  */ %>
+          <div class="form-group <%= (errors.name != undefined) ? " has-error" : "" %>">
+            <div class="col-md-12 text-right">
+              <button title="Update Profile" type="submit" class="btn btn-primary">
+                Update Profile
+              </button>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>dashboard">Cancel</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

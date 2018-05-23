@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= typeof title == 'undefined' ? sails.config.app_provider + ' | ' + sails.config.app_name : sails.config.app_name + ' | ' + title %></title>
+  <!-- Viewport mobile tag for sensible mobile support -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <link rel="icon" type="image/x-icon" href="<%= sails.config.base_url %>images/favicon.ico"/>
+  <!--STYLES-->
+  
+  <!--STYLES END-->
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/sweet-alert.css">
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/fontawesome/css/font-awesome.css">
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/metisMenu/dist/metisMenu.css">
+  <link rel="stylesheet" type="text/css" media="screen"
+        href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css"/>
+  <!-- The link to the CSS that the grid needs -->
+  <link rel="stylesheet" type="text/css" media="screen"
+        href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/css/ui.jqgrid.min.css"/>
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/vendor/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="<%= sails.config.base_url %>custom/styles/style.css">
+
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script>var BASE_URL = "<%= sails.config.base_url_js %>"</script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=<%= sails.config.google_key %>&libraries=places"
+  ></script>
+
+</head>
+<body class="admin-layout hide-sidebar">
+<!-- Simple splash screen-->
+<div class="splash">
+  <div class="splash-title">
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </div>
+</div>
+<div class="splash">
+  <div class="splash-title">
+    <h1><%= sails.config.app_name %></h1>
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </div>
+</div>
+<div class="splash">
+  <div class="splash-title">
+    <h1><%= sails.config.app_name %></h1>
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </div>
+</div>
+<!--[if lt IE 7]>
+<p class="alert alert-danger">You are using an <strong>outdated</strong> browser. Please <a
+  href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+<!-- Header -->
+<div id="header">
+  <div id="logo" class="light-version header-logo">
+    <a href="<%= sails.config.base_url %>"><h1><i class="fa fa-trash-o" aria-hidden="true"></i> Smartbin</h1> <img
+        src="<%= sails.config.base_url %>images/logo.png" title="<%= sails.config.app_name %>"
+        alt="<%= sails.config.app_name %>" class="client-logo"></a>
+  </div>
+  <nav role="navigation">
+    <!--<div class="header-link hide-menu"><i class="fa fa-bars"></i></div>-->
+    <div class="small-logo">
+      <span class="text-primary"><%= sails.config.app_name %></span>
+    </div>
+    <div class="navbar-right">
+      <ul class="nav navbar-nav no-borders col-md-12">
+        <li class="<%= (req.options.controller == 'dashboard' && (req.options.action == 'index')) ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>dashboard" title="Dashboard"><i class="fa fa-dashboard"
+                                                                                 aria-hidden="true"></i> <span
+              class="nav-label">Dashboard</span></a>
+        </li>
+        <li class="<%= (req.options.controller == 'bin' && (req.options.action != 'search')) ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>bin" title="Manage Bin"><i class="fa fa-tasks" aria-hidden="true"></i>
+            <span
+              class="nav-label">Manage Bin</span></a>
+        <li class="<%= (req.options.controller == 'driver') ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>driver" title="Driver"><i class="fa fa-empire" aria-hidden="true"></i>
+            <span class="nav-label">Driver</span></a>
+        </li>
+        <li class="<%= (req.options.controller == 'vehicle') ? 'active' : '' %>">
+          <a href="<%= sails.config.base_url %>vehicle" title="Vehicle"><i class="fa fa-car" aria-hidden="true"></i>
+            <span class="nav-label">Vehicle</span></a>
+        </li>
+        <li
+          class="dropdown <%= ((req.options.controller == 'dashboard') && (req.options.action == 'profile' || req.options.action == 'changePassword')) ? 'active' : '' %>">
+          <a title="Setting" class="dropdown-toggle label-menu-corner logout" href="#" data-toggle="dropdown"
+             aria-expanded="false">
+            <i class="pe-7s-config"></i><span class="nav-label">Setting</span>
+          </a>
+          <ul class="dropdown-menu hdropdown animated flipInX">
+            <li>
+              <a href="<%= sails.config.base_url %>dashboard/profile" title="Profile">Profile</a>
+            </li>
+            <li>
+              <a href="<%= sails.config.base_url %>dashboard/changePassword" title="Profile">Change Password</a>
+            </li>
+            <li><a href="<%= sails.config.base_url %>dashboard/logout" title="Profile">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+<!-- Main Wrapper -->
+<div id="wrapper">
+  <div class="content animate-panel">
+    <div class="row">
+      <div class="col-lg-12">
+        <%- body %>
+      </div>
+      <p class="footer text-center m-b-none">
+        © <%= (new Date()).getFullYear() %> <span class="m-b-none"><%= sails.config.app_name %></span> All Rights
+        Reserved.
+      </p>
+
+    </div>
+  </div>
+</div>
+<div class="modal iframe-modal-wrapper" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="row">
+          <div class="col-md-10">
+            <h3 class="modal-title m-t-0">VIEW</h3>
+          </div>
+          <div class="col-md-2 text-right">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i
+                  class="fa fa-times" aria-hidden="true"></i></span></button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <iframe src="" class="iframe bg-white" frameborder="0" name="info" seamless height="100%" width="100%"></iframe>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!--SCRIPTS-->
+
+<!--SCRIPTS END-->
+<!-- <script src="/custom/js/dependencies/sails.io.js"></script>   -->
+
+<script src="<%= sails.config.base_url %>custom/js/vendor/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/vendor/metisMenu/dist/metisMenu.min.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/vendor/parsley.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/homer.js"></script>
+<script src="<%= sails.config.base_url %>custom/js/admin.js"></script>
+<script type="text/ecmascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/js/i18n/grid.locale-en.js"></script>
+<!-- This is the Javascript file of jqGrid -->
+<script type="text/ecmascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.12.0/js/jquery.jqgrid.min.js"></script>
+</body>
+</html>

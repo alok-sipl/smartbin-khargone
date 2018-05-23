@@ -1,0 +1,37 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="font-light m-b-xs">
+                        Driver List
+                    </h2>
+                    <div id="hbreadcrumb">
+                        <ol class="hbreadcrumb breadcrumb">
+                            <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+                            <li class="active">
+                                <span>Driver List</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                 <div class="col-md-6 text-right m-t-sm">
+                  <a title="Add Driver" class="btn btn-primary" href="<%= sails.config.base_url %>driver/add"><i class="icon icon-user"></i>Add Driver</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="hpanel">
+  <div class="panel-body">
+    <table  id="driver-grid"></table>
+    <div id="driver-grid-pager"></div>
+  </div>
+</div>

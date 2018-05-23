@@ -1,0 +1,143 @@
+<div class="normalheader transition animated fadeIn">
+  <div class="hpanel">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="font-light m-b-xs">
+            <%= (Object.keys(driver).length) ? 'Edit' : 'Add' %> Driver
+          </h2>
+          <div id="hbreadcrumb">
+            <ol class="hbreadcrumb breadcrumb">
+              <li><a title="Dashboard" href="<%= sails.config.base_url %>dashboard">Dashboard</a></li>
+              <li><a title="Driver List" href="<%= sails.config.base_url %>driver">Driver List</a></li>
+              <li class="active">
+                <%= (Object.keys(driver).length) ? 'Edit' : 'Add' %> Driver</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="alert alert-success" style="display: none"></div>
+<div class="alert alert-danger" style="display: none"></div>
+<% if (req.session.flash) { %>
+<%- req.flash('flashMessage') %>
+<% } %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="hpanel">
+      <div class="panel-body">
+        <% if(!(Object.keys(driver).length)){ %>
+        <form action="<%= sails.config.base_url %>driver/add" method="post" enctype="multipart/form-data"
+              id="add-driver" class='form-horizontal form-submit' data-parsley-validate='true' autocomplete="off">
+          <% }else{ %>
+          <form action="<%= sails.config.base_url %>driver/edit/<%= req.params.id %>" method="post"
+                enctype="multipart/form-data"
+                id="add-driver" class='form-horizontal form-submit' data-parsley-validate='true' autocomplete="off">
+            <% } %>
+            <% if (req.session.flash) { %>
+            <%- req.flash('flashMessage') %>
+            <% } %>
+            <div class="form-group ">
+            <div class="col-md-4">
+              <label for="last_name">Name<span class="star-icon">*</span></label>
+              <input type="text" name="name" class="form-control" id="name" required
+                     value="<%= (driver.name) ? (driver.name) : (req.param('name')) ? req.param('name') : '' %>"
+                     maxlength="<%= sails.config.length.name %>"
+                     data-parsley-required-message="<%= Driver.message.name_required %>"
+                     data-parsley-maxlength-message="<%= Driver.message.name_maxlength %>"
+                     pattern="<%= sails.config.regex.name %>"
+                     data-parsley-pattern-message="<%= Driver.message.name_pattern %>"
+                     placeholder="Name"/>
+              <span class="help-block">
+                  <strong><%= (errors.name != undefined) ? errors.name.message : '' %>
+                  </strong>
+                </span>
+            </div>
+            <div class="col-md-4">
+              <label for="contact_no">Mobile Number<span class="star-icon">*</span></label>
+              <input type="text" name="mobile_number" class="form-control" id="mobile_number"
+                     value="<%= (driver.mobile_number) ? (driver.mobile_number) : (req.param('mobile_number')) ? req.param('mobile_number') : '' %>"
+                     required
+                     maxlength="<%= sails.config.length.max_mobile_number %>"
+                     pattern="<%= sails.config.regex.mobile_number %>"
+                     data-parsley-length="[<%= sails.config.length.min_mobile_number %>, <%= sails.config.length.max_mobile_number %>]"
+                     data-parsley-required-message="<%= Driver.message.mobile_number_required %>"
+                     data-parsley-length-message="<%= Driver.message.mobile_number_length %>"
+                     data-parsley-pattern-message="<%= Driver.message.mobile_number_pattern %>"
+                     placeholder="Mobile Number"/>
+              <span class="help-block">
+                  <strong><%= (errors.mobile_number != undefined) ? errors.mobile_number.message : '' %>
+                  </strong>
+                </span>
+            </div>
+            <div class="col-md-4">
+              <label for="is_active">Area<span class="star-icon">*</span></label>
+              <div class="tank_type">
+                <select onchange="getArea(this.value)" name="area" id="area" class="form-control" required
+                        data-parsley-required-message="<%= Driver.message.area_required %>">
+                  <option value="">Select Area</option>
+                  <%
+                  if(Object.keys(areas).length){
+                    for(var key in areas) { %>
+                  <option
+                    <% if (driver.area_id != undefined && driver.area_id && driver.area_id == areas[key].key) { %>
+                    selected
+                    <% } %>
+                    value="<%= areas[key].key %>"><%= areas[key].name %></option>
+                  <% }
+                  } %>
+                </select>
+                <input type="hidden" name="area_name" id="area_name"
+                       value="<%= (driver.area_name != undefined) ?  driver.area_name : '' %>"/>
+              </div>
+              <span class="help-block">
+                <strong><%= (errors.area != undefined) ? errors.area.message : '' %>
+                </strong>
+              </span>
+            </div>
+            </div>
+            <div class="form-group ">
+            <div class="col-md-4">
+              <label for="is_active">Address<span class="star-icon">*</span></label>
+              <input type="text" onFocus="geolocate()" name="address" class="form-control" required id="address"
+                     value="<%= (driver.address) ? (driver.address) : (req.param('address')) ? req.param('address') : '' %>"
+                     maxlength="<%= sails.config.length.address %>"
+                     data-parsley-required-message="<%= Driver.message.address_required %>"
+                     data-parsley-maxlength-message="<%= Driver.message.address_maxlength %>"
+                     placeholder="Address"/>
+              <span class="help-block">
+                  <strong><%= (errors.address != undefined) ? errors.address.message : '' %>
+                  </strong>
+                </span>
+            </div>
+              <div class="col-md-3">
+                <label for="is_active">Status<span class="star-icon">*</span></label>
+                <select name="status" id="status" class="form-control" required
+                        data-parsley-required-message="<%= User.message.status_required %>">
+                  <option <%= (driver.is_deleted == undefined) ? "selected" : "" %> value="">Select Status</option>
+                  <option <%= (driver.is_deleted == false || driver.is_deleted == "false") ? "selected" : "" %>
+                    value="false">Active
+                  </option>
+                  <option <%= (driver.is_deleted == true || driver.is_deleted == "true") ? "selected" : "" %>
+                    value="true">In Active
+                  </option>
+                </select>
+                <span class="help-block">
+                                        <strong><%= (errors.status != undefined) ? errors.status.message : '' %>
+                                        </strong>
+              </div>
+            </div>
+            <div class="col-md-12 text-right">
+              <button type="submit" title="<%= (Object.keys(driver).length) ? 'Update' : 'Add' %> Driver" class="btn btn-primary">
+                <%= (Object.keys(driver).length) ? 'Update' : 'Add' %> Driver
+              </button>
+              <a title="Cancel" class="btn btn-primary" href="<%= sails.config.base_url %>driver">Cancel</a>
+            </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
