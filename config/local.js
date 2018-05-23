@@ -83,10 +83,10 @@
    // environment: process.env.NODE_ENV || 'development'
     app_provider: 'Smartbin Khargone',
    app_name: 'Nagar Palika Khargone',
-   //base_url: 'https://smart-bin.herokuapp.com/',
-   //base_url_js: 'https://smart-bin.herokuapp.com',
-   base_url: 'http://localhost:1337/',
-   base_url_js: 'http://localhost:1337',
+   base_url: 'https://smartbinnew.herokuapp.com/',
+   base_url_js: 'https://smartbinnew.herokuapp.com',
+   //base_url: 'http://localhost:1337/',
+   //base_url_js: 'http://localhost:1337',
    google_key: "AIzaSyDKqiSzlWOyPDonL16HF3xHeFXRtgwKOKU" ,
    per_page_data : 9,
 
